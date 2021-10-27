@@ -1,0 +1,7 @@
+Fast Evo MCTS without any knowledge of features.
+
+N 	Win 	Tie 	Loss 	Player (overtime average)
+200	29.0%	13.5%	57.5%	players.emcts.EMCTSPlayer (0.0)
+200	0.0%	0.0%	100.0%	players.OSLAPlayer (0.0)
+200	23.5%	7.5%	69.0%	players.rhea.RHEAPlayer (1.0)
+200	32.0%	13.0%	55.0%	players.mcts.MCTSPlayer (0.0)
