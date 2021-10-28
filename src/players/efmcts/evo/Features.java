@@ -63,14 +63,20 @@ public class Features {
             }
         }
 
+        double minBombDist = 40.0;
         double totalBombDistance = 0.0;
         for (int i = 0; i<bombs.size(); i++){
-            totalBombDistance += myPosition.dist(bombs.get(i).getPosition());
+            double dist = myPosition.dist(bombs.get(i).getPosition());
+            if (dist<100) minBombDist = dist;
+            //totalBombDistance += myPosition.dist(bombs.get(i).getPosition());
         }
 
+        double minEnemyDist = 40.0;
         double totalEnemyDistance = 0.0;
         for (int i = 0; i<enemies.size(); i++){
-            totalEnemyDistance += myPosition.dist(enemies.get(i).getPosition());
+            double dist = myPosition.dist(enemies.get(i).getPosition());
+            if (dist<100) minEnemyDist = dist;
+            //totalEnemyDistance += myPosition.dist(enemies.get(i).getPosition());
         }
 
 //        Dijkstra.Container container = dijkstra.getDistances(board, myPosition, bombs, enemies);
@@ -92,18 +98,14 @@ public class Features {
 //            }
 //        }
 
-        statsToReturn[0] = stats.blastStrength;
-//        statsToReturn[1] = Double.valueOf(stats.nEnemies);
-//        statsToReturn[2] = Double.valueOf(stats.nWoods)/20;
-        statsToReturn[1] = gs.getAmmo();
-        statsToReturn[2] = (double) stats.tick /800;
-        //statsToReturn[4] = bombFeat;
-        //statsToReturn[5] = enemyFeat;
+        statsToReturn[0] = 40.0/(minBombDist+1);
+        statsToReturn[1] = 40.0/(minEnemyDist+1);
+        statsToReturn[2] = (double)gs.getTick()/800;
+        statsToReturn[3] = (double)gs.getAmmo()*gs.getBlastStrength()/10;
+        statsToReturn[4] = (double) stats.nWoods /20;
 
-        statsToReturn[3] = totalBombDistance;
-        statsToReturn[4] = totalEnemyDistance;
         if (stats.canKick)
-            statsToReturn[5] = 1.0;
+            statsToReturn[5] = 0.3;
         else statsToReturn[5] = 0.0;
 
 

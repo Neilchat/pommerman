@@ -9,13 +9,9 @@ public class BoardStats {
     boolean canKick;
     int nWoods;
     static double maxWoods = -1;
-    static double maxBlastStrength = 10;
 
     double FACTOR_ENEMY;
     double FACTOR_TEAM;
-    double FACTOR_WOODS = 0.1;
-    double FACTOR_CANKCIK = 0.15;
-    double FACTOR_BLAST = 0.15;
 
     public BoardStats(GameState gs) {
         nEnemies = gs.getAliveEnemyIDs().size();
