@@ -22,7 +22,7 @@ public class Features {
 
 
     public double[] getStats(){
-        double[] statsToReturn = new double[6];
+        double[] statsToReturn = new double[7];
         BoardStats stats = new BoardStats(gs);
         Vector2d myPosition = gs.getPosition();
 
@@ -37,6 +37,7 @@ public class Features {
 
         ArrayList<Bomb> bombs = new ArrayList<>();
         ArrayList<GameObject> enemies = new ArrayList<>();
+        ArrayList<GameObject> powerUps = new ArrayList<>();
 
         for (int x = 0; x < boardSizeX; x++) {
             for (int y = 0; y < boardSizeY; y++) {
@@ -60,6 +61,11 @@ public class Features {
                         enemies.add(enemy); // no copy needed
                     }
                 }
+                else if (Types.TILETYPE.getPowerUpTypes().contains(type)){
+                    GameObject powerUp = new GameObject(type);
+                    powerUp.setPosition(new Vector2d(x, y));
+                    powerUps.add(powerUp);
+                }
             }
         }
 
@@ -67,7 +73,7 @@ public class Features {
         double totalBombDistance = 0.0;
         for (int i = 0; i<bombs.size(); i++){
             double dist = myPosition.dist(bombs.get(i).getPosition());
-            if (dist<100) minBombDist = dist;
+            if (dist<minBombDist) minBombDist = dist;
             //totalBombDistance += myPosition.dist(bombs.get(i).getPosition());
         }
 
@@ -75,8 +81,14 @@ public class Features {
         double totalEnemyDistance = 0.0;
         for (int i = 0; i<enemies.size(); i++){
             double dist = myPosition.dist(enemies.get(i).getPosition());
-            if (dist<100) minEnemyDist = dist;
+            if (dist<minEnemyDist) minEnemyDist = dist;
             //totalEnemyDistance += myPosition.dist(enemies.get(i).getPosition());
+        }
+
+        double minPowerUp = 40.0;
+        for (int i = 0; i<powerUps.size(); i++){
+            double dist = myPosition.dist(powerUps.get(i).getPosition());
+            if (dist<minPowerUp) minPowerUp = dist;
         }
 
 //        Dijkstra.Container container = dijkstra.getDistances(board, myPosition, bombs, enemies);
@@ -107,6 +119,8 @@ public class Features {
         if (stats.canKick)
             statsToReturn[5] = 0.3;
         else statsToReturn[5] = 0.0;
+
+        statsToReturn[6] = 40.0/(minPowerUp+1);
 
 
         return statsToReturn;

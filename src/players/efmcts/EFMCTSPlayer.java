@@ -47,7 +47,7 @@ public class EFMCTSPlayer extends ParameterizedPlayer{
             actions[i++] = act;
         }
 
-        ea = new Evolution(m_rnd, 10, 6, actions.length);
+        ea = new Evolution(m_rnd, 10, 7, actions.length);
         ea.init();
 
     }
