@@ -128,6 +128,13 @@ public class Evolution {
             population[i] = offspring[nextIdx].copy();
             nextIdx ++;
         }
+
+        for (int i = startIdx; i < popsize; i++) {
+            for (int j =0; j< numActions; j++) {
+                List mutateGenes = mutationClass.findGenesToMutate();
+                mutationClass.mutateGenes(population[i], j, mutateGenes);
+            }
+        }
     }
 
 

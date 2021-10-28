@@ -39,14 +39,13 @@ public class Test {
         RHEAParams rheaParams = new RHEAParams();
         rheaParams.heurisic_type = Constants.CUSTOM_HEURISTIC;
 
+        players.add(new MCTSPlayer(seed, playerID++, mctsParams));
+        //players.add(new MCTSPlayer(seed, playerID++, mctsParams));
+
         EFMCTSParams efmctsParams = new EFMCTSParams();
         efmctsParams.stop_type = efmctsParams.STOP_TIME;
         efmctsParams.heuristic_method = efmctsParams.CUSTOM_HEURISTIC;
-
-//        players.add(new MCTSPlayer(seed, playerID++, mctsParams));
-        //players.add(new MCTSPlayer(seed, playerID++, mctsParams));
-
-        players.add(new SimplePlayer(seed, playerID++));
+//        players.add(new SimplePlayer(seed, playerID++));
         players.add(new RHEAPlayer(seed, playerID++, rheaParams));
 //        players.add(new SimplePlayer(seed, playerID++));
         players.add(new MCTSPlayer(seed, playerID++, new MCTSParams()));

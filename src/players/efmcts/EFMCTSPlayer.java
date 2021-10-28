@@ -47,7 +47,8 @@ public class EFMCTSPlayer extends ParameterizedPlayer{
             actions[i++] = act;
         }
 
-        ea = new Evolution(m_rnd, 10, 6, actions.length);
+        //Initialize a population of 10 individuals, each Individual is a weight matrix for action cross features.
+        ea = new Evolution(m_rnd, 10, 6, effectiveActions);
         ea.init();
 
     }

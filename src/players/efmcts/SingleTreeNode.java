@@ -95,6 +95,7 @@ public class SingleTreeNode
                 GameState state = rootState.copy();
                 SingleTreeNode selected = treePolicy(state);
                 double delta = selected.rollOut(state, weights.get_actions());
+                //System.out.println("Delta  "+delta);
                 backUp(selected, delta);
                 ea.evaluate(ea.getPopulation()[i], delta);
             }
@@ -120,9 +121,9 @@ public class SingleTreeNode
             System.out.println();
             Features features = new Features(rootState, m_rnd);
             double[] featureWeights = features.getStats();
-            double[] actionWeights = new double[num_actions];
+            double[] actionWeights = new double[effectiveActions];
             double[][] weights = ea.getPopulation()[0].get_actions();
-            for (int i =0; i< num_actions; i++) {
+            for (int i =0; i< effectiveActions; i++) {
                 for (int j = 0; j < featureWeights.length; j++) {
                     System.out.print(weights[i][j] + "  ");
                     actionWeights[i] += weights[i][j]*featureWeights[j];
@@ -130,10 +131,11 @@ public class SingleTreeNode
                 System.out.println();
             }
             System.out.println("Action weights  ");
-            for (int i = 0; i < actions.length; i++) {
+            for (int i = 0; i < effectiveActions; i++) {
                 System.out.print(actionWeights[i] + "  ");
             }
             System.out.println();
+            System.out.println("Feature weights  ");
             for (int i = 0; i < featureWeights.length; i++) {
                 System.out.print(featureWeights[i] + "  ");
             }
@@ -251,20 +253,21 @@ public class SingleTreeNode
 
     private int safeWeightedAction(GameState state, double[][] weights)
     {
+
         double[] probs = getProabilities(weights, state);
 
         double prob = m_rnd.nextDouble();
 
-        for (int i =0; i< num_actions; i++){
+        //Using the probabilities we decide whether moving or stopping or bomb.
+        for (int i =0; i< effectiveActions; i++){
             prob = prob - probs[i];
             if (prob<=0){
-                if (isSafeAction(state, i)) {
-                    return i;
-                }
-                else return safeRandomAction(state);
+                if (i==0) return safeRandomMoveAction(state);
+                if (i==1) return Types.ACTIONS.ACTION_STOP.getKey();
+                if (i==2) return Types.ACTIONS.ACTION_BOMB.getKey();
             }
         }
-
+        //It should never reach this.
         return safeRandomAction(state);
     }
 
@@ -302,6 +305,22 @@ public class SingleTreeNode
         return m_rnd.nextInt(num_actions);
     }
 
+    private int safeRandomMoveAction(GameState state)
+    {
+        ArrayList<Types.ACTIONS> actionsToTry = Types.ACTIONS.move();
+        while(actionsToTry.size() > 0) {
+
+            int nAction = m_rnd.nextInt(actionsToTry.size());
+            if (isSafeAction(state, nAction))
+                return nAction;
+
+            actionsToTry.remove(nAction);
+        }
+
+        //Uh oh...
+        return m_rnd.nextInt(num_actions);
+    }
+
     private double[] getProabilities(double[][] weights, GameState state){
         double[] actionWeights = getActionWeights(weights, state);
         double sum=0;
@@ -318,8 +337,8 @@ public class SingleTreeNode
     private double[] getActionWeights(double[][] weights, GameState state){
         Features features = new Features(state, m_rnd);
         double[] featureWeights = features.getStats();
-        double[] actionWeights = new double[num_actions];
-        for (int i =0; i< num_actions; i++) {
+        double[] actionWeights = new double[effectiveActions];
+        for (int i =0; i< effectiveActions; i++) {
             for (int j = 0; j < featureWeights.length; j++) {
                 actionWeights[i] += weights[i][j]*featureWeights[j];
             }
