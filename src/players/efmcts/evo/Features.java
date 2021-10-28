@@ -67,7 +67,7 @@ public class Features {
         double totalBombDistance = 0.0;
         for (int i = 0; i<bombs.size(); i++){
             double bombDist = myPosition.dist(bombs.get(i).getPosition());
-            if (minBombDist<bombDist) minBombDist = bombDist;
+            if (bombDist<minBombDist) minBombDist = bombDist;
             totalBombDistance += bombDist;
         }
 
