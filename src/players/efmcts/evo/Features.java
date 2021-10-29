@@ -63,7 +63,7 @@ public class Features {
             }
         }
 
-        double minBombDist = 100.0;
+        double minBombDist = 40.0;
         double totalBombDistance = 0.0;
         for (int i = 0; i<bombs.size(); i++){
             double bombDist = myPosition.dist(bombs.get(i).getPosition());
@@ -71,7 +71,7 @@ public class Features {
             totalBombDistance += bombDist;
         }
 
-        double minEnemyDist = 100.0;
+        double minEnemyDist = 40.0;
         double totalEnemyDistance = 0.0;
         for (int i = 0; i<enemies.size(); i++){
             double enemyDist = myPosition.dist(enemies.get(i).getPosition());
