@@ -37,6 +37,8 @@ public class Features {
 
         ArrayList<Bomb> bombs = new ArrayList<>();
         ArrayList<GameObject> enemies = new ArrayList<>();
+        ArrayList<GameObject> powerUps = new ArrayList<>();
+
 
         for (int x = 0; x < boardSizeX; x++) {
             for (int y = 0; y < boardSizeY; y++) {
@@ -60,6 +62,11 @@ public class Features {
                         enemies.add(enemy); // no copy needed
                     }
                 }
+                else if (Types.TILETYPE.getPowerUpTypes().contains(type)){
+                    GameObject powerUp = new GameObject(type);
+                    powerUp.setPosition(new Vector2d(x, y));
+                    powerUps.add(powerUp);
+                }
             }
         }
 
@@ -77,6 +84,12 @@ public class Features {
             double enemyDist = myPosition.dist(enemies.get(i).getPosition());
             if (enemyDist<minEnemyDist) minEnemyDist = enemyDist;
             totalEnemyDistance += enemyDist;
+        }
+
+        double minPowerUp = 40.0;
+        for (int i = 0; i<powerUps.size(); i++){
+            double dist = myPosition.dist(powerUps.get(i).getPosition());
+            if (dist<minPowerUp) minPowerUp = dist;
         }
 
 //        Dijkstra.Container container = dijkstra.getDistances(board, myPosition, bombs, enemies);
@@ -100,7 +113,7 @@ public class Features {
 
         statsToReturn[0] = 40.0/(minBombDist+1);
         statsToReturn[1] = 40.0/(minEnemyDist+1);
-        statsToReturn[2] = (double)gs.getTick()/800;
+        statsToReturn[2] = (double)40.0/(minPowerUp+1);
         statsToReturn[3] = (double)gs.getAmmo()*gs.getBlastStrength()/10;
         statsToReturn[4] = (double) stats.nWoods /20;
 

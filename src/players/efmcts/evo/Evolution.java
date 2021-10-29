@@ -96,8 +96,8 @@ public class Evolution {
         Individual[] offspring = new Individual[6];
         for (int i = 0; i < 6; i++) {
             offspring[i] = crossover(population);
+            List mutateGenes = mutationClass.findGenesToMutate();
             for (int j =0; j< numActions; j++) {
-                List mutateGenes = mutationClass.findGenesToMutate();
                 mutationClass.mutateGenes(offspring[i], j, mutateGenes);
                 }
             }
@@ -130,8 +130,8 @@ public class Evolution {
         }
 
         for (int i = startIdx; i < popsize; i++) {
+            List mutateGenes = mutationClass.findGenesToMutate();
             for (int j =0; j< numActions; j++) {
-                List mutateGenes = mutationClass.findGenesToMutate();
                 mutationClass.mutateGenes(population[i], j, mutateGenes);
             }
         }
