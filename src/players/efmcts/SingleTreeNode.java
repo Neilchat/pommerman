@@ -33,7 +33,7 @@ public class SingleTreeNode
     private int fmCallsCount;
 
     private int num_actions;
-    private int effectiveActions =3;
+    private int effectiveActions =2;
     private Types.ACTIONS[] actions;
 
     private GameState rootState;
@@ -92,12 +92,16 @@ public class SingleTreeNode
 
             for (int i =0; i< ea.getPopsize(); i++) {
                 Individual weights = ea.getPopulation()[i];
-                GameState state = rootState.copy();
-                SingleTreeNode selected = treePolicy(state);
-                double delta = selected.rollOut(state, weights.get_actions());
-                //System.out.println("Delta  "+delta);
-                backUp(selected, delta);
-                ea.evaluate(ea.getPopulation()[i], delta);
+                double fitness = 0.0;
+                for (int j = 0; j<10; j++) {
+                    GameState state = rootState.copy();
+                    SingleTreeNode selected = treePolicy(state);
+                    double delta = selected.rollOut(state, weights.get_actions());
+                    //System.out.println("Delta  "+delta);
+                    backUp(selected, delta);
+                    fitness+=delta;
+                }
+                ea.evaluate(ea.getPopulation()[i], fitness/10);
             }
             ea.evolve();
 
@@ -263,7 +267,7 @@ public class SingleTreeNode
             prob = prob - probs[i];
             if (prob<=0){
                 if (i==0) return safeRandomMoveAction(state);
-                if (i==1) return Types.ACTIONS.ACTION_STOP.getKey();
+//                if (i==1) return Types.ACTIONS.ACTION_STOP.getKey();
                 if (i==2) return Types.ACTIONS.ACTION_BOMB.getKey();
             }
         }

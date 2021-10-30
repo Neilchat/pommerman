@@ -111,9 +111,9 @@ public class Features {
 //            }
 //        }
 
-        statsToReturn[0] = 40.0/(minBombDist+1);
-        statsToReturn[1] = 40.0/(minEnemyDist+1);
-        statsToReturn[2] = (double)40.0/(minPowerUp+1);
+        statsToReturn[0] = 1.0/(minBombDist+1);
+        statsToReturn[1] = 1.0/(minEnemyDist+1);
+        statsToReturn[2] = 1.0/(minPowerUp+1);
         statsToReturn[3] = (double)gs.getAmmo()*gs.getBlastStrength()/10;
         statsToReturn[4] = (double) stats.nWoods /20;
 

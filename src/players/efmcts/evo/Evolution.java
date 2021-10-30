@@ -50,9 +50,16 @@ public class Evolution {
 
     private void init_population() {
         population = new Individual[popsize];
+//        for (int i = 0; i < popsize; i++) {
+//            population[i] = new Individual(numActions, random, featureLength);
+//            population[i].randomize();
+//        }
+
+        double[][] actions ={{3.11661410245542, 1.853909465111095,  0.5045074485192123,  2.255517456741045,  -3.2045954727232115,  -0.9658258798879004},{-0.41062206821638764,  -1.8173158310626278,  -0.6856400936877366,  3.214616790960874,  -1.3967266916051384,  -2.9659237997188956
+        }};
         for (int i = 0; i < popsize; i++) {
             population[i] = new Individual(numActions, random, featureLength);
-            population[i].randomize();
+            population[i].set_actions(actions);
         }
     }
 
@@ -97,8 +104,14 @@ public class Evolution {
         for (int i = 0; i < 6; i++) {
             offspring[i] = crossover(population);
             List mutateGenes = mutationClass.findGenesToMutate();
+            double[] mutationVals = new double[mutateGenes.size()];
+            for (int k = 0; k< mutationVals.length; k++){
+                mutationVals[k] = random.nextDouble();
+            }
+            boolean actionPositive = random.nextBoolean();
             for (int j =0; j< numActions; j++) {
-                mutationClass.mutateGenes(offspring[i], j, mutateGenes);
+                mutationClass.mutateGenes(offspring[i], j, mutateGenes, mutationVals, actionPositive);
+                actionPositive = !actionPositive;
                 }
             }
         return offspring;
@@ -131,8 +144,14 @@ public class Evolution {
 
         for (int i = startIdx; i < popsize; i++) {
             List mutateGenes = mutationClass.findGenesToMutate();
+            double[] mutationVals = new double[mutateGenes.size()];
+            for (int k = 0; k< mutationVals.length; k++){
+                mutationVals[k] = random.nextDouble();
+            }
+            boolean actionPositive = random.nextBoolean();
             for (int j =0; j< numActions; j++) {
-                mutationClass.mutateGenes(population[i], j, mutateGenes);
+                mutationClass.mutateGenes(population[i], j, mutateGenes, mutationVals, actionPositive);
+                actionPositive = !actionPositive;
             }
         }
     }

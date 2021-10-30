@@ -28,7 +28,7 @@ public class EFMCTSPlayer extends ParameterizedPlayer{
      */
     public EFMCTSParams params;
 
-    private int effectiveActions = 3;
+    private int effectiveActions = 2;
 
     public EFMCTSPlayer(long seed, int id) {
         this(seed, id, new EFMCTSParams());

@@ -224,6 +224,7 @@ public class Types {
             allActions.add(ACTION_DOWN);
             allActions.add(ACTION_LEFT);
             allActions.add(ACTION_RIGHT);
+            allActions.add(ACTION_STOP);
             return allActions;
         }
         /**
