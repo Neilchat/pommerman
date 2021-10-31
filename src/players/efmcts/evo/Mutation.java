@@ -33,13 +33,12 @@ public class Mutation {
     }
 
 
-    public void mutateGenes(Individual ind, int action, List<Integer> genesToMutate, double[] mutationValues, boolean actionPositive){
-        int k =0;
+    public void mutateGenes(Individual ind, int action, List<Integer> genesToMutate){
         for (int i = 0; i < featureLength; i++) {
             if (genesToMutate.contains(i)) {
-                if (actionPositive) ind.set_action(action, i, ind.get_action(action, i) + mutationValues[k] * 0.0001);
-                else ind.set_action(action, i, ind.get_action(action, i) - mutationValues[k] * 0.0001);
-                k++;
+                if (random.nextDouble()>0.45) ind.set_action(action, i, ind.get_action(action, i) + random.nextDouble()* 0.001);
+                else ind.set_action(action, i, ind.get_action(action, i) - random.nextDouble()* 0.001);
+                //ind.set_action(action, i, ind.get_action(action, i) + random.nextDouble()* 0.001);
             }
         }
         //normalize(ind, action);

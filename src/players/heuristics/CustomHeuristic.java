@@ -42,6 +42,8 @@ public class CustomHeuristic extends StateHeuristic {
         double FACTOR_CANKCIK = 0.15;
         double FACTOR_BLAST = 0.15;
 
+        int ammo;
+
         BoardStats(GameState gs) {
             nEnemies = gs.getAliveEnemyIDs().size();
 
@@ -60,6 +62,7 @@ public class CustomHeuristic extends StateHeuristic {
             this.tick = gs.getTick();
             this.blastStrength = gs.getBlastStrength();
             this.canKick = gs.canKick();
+            this.ammo = gs.getAmmo();
 
             // Count the number of wood walls
             this.nWoods = 1;
@@ -88,6 +91,7 @@ public class CustomHeuristic extends StateHeuristic {
             int diffWoods = - (futureState.nWoods - this.nWoods);
             int diffCanKick = futureState.canKick ? 1 : 0;
             int diffBlastStrength = futureState.blastStrength - this.blastStrength;
+            int diffAmmo = futureState.ammo - this.ammo;
 
             return (diffEnemies / 3.0) * 2 + diffTeammates * FACTOR_TEAM + (diffWoods / maxWoods) * FACTOR_WOODS
                     + diffCanKick * FACTOR_CANKCIK + (diffBlastStrength / maxBlastStrength) * FACTOR_BLAST;

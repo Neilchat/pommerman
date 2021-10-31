@@ -93,7 +93,7 @@ public class SingleTreeNode
             for (int i =0; i< ea.getPopsize(); i++) {
                 Individual weights = ea.getPopulation()[i];
                 double fitness = 0.0;
-                for (int j = 0; j<10; j++) {
+                for (int j = 0; j<4; j++) {
                     GameState state = rootState.copy();
                     SingleTreeNode selected = treePolicy(state);
                     double delta = selected.rollOut(state, weights.get_actions());
@@ -101,7 +101,7 @@ public class SingleTreeNode
                     backUp(selected, delta);
                     fitness+=delta;
                 }
-                ea.evaluate(ea.getPopulation()[i], fitness/10);
+                ea.evaluate(ea.getPopulation()[i], fitness/4);
             }
             ea.evolve();
 
@@ -134,6 +134,7 @@ public class SingleTreeNode
                 }
                 System.out.println();
             }
+            actionWeights[0] =5*actionWeights[0];
             System.out.println("Action weights  ");
             for (int i = 0; i < effectiveActions; i++) {
                 System.out.print(actionWeights[i] + "  ");
@@ -347,6 +348,7 @@ public class SingleTreeNode
                 actionWeights[i] += weights[i][j]*featureWeights[j];
             }
         }
+        actionWeights[0] = actionWeights[0]*5;
         return actionWeights;
     }
 
