@@ -50,17 +50,18 @@ public class Evolution {
 
     private void init_population() {
         population = new Individual[popsize];
-        for (int i = 0; i < popsize; i++) {
-            population[i] = new Individual(numActions, random, featureLength);
-            population[i].randomize();
-        }
-
-//        double[][] actions ={{3.11661410245542, 1.853909465111095,  0.5045074485192123,  2.255517456741045,  -3.2045954727232115,  -0.9658258798879004},{-0.41062206821638764,  -1.8173158310626278,  -0.6856400936877366,  3.214616790960874,  -1.3967266916051384,  -2.9659237997188956
-//        }};
 //        for (int i = 0; i < popsize; i++) {
 //            population[i] = new Individual(numActions, random, featureLength);
-//            population[i].set_actions(actions);
+//            population[i].randomize();
 //        }
+
+        double[][] actions ={{ 0.2702793692827582,  0.18408435060940917,  0.3277143777498021,  0.3031121226272133,  0.3859720291483031},
+                {0.21093693712606898 ,  0.2920830971083769,  0.22817448797837608,  0.25026563595402523,  0.2468879471030393
+        }};
+        for (int i = 0; i < popsize; i++) {
+            population[i] = new Individual(numActions, random, featureLength);
+            population[i].set_actions(actions);
+        }
     }
 
     public void evaluate(Individual individual, double delta){

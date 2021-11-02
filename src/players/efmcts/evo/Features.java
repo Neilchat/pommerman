@@ -22,7 +22,7 @@ public class Features {
 
 
     public double[] getStats(){
-        double[] statsToReturn = new double[7];
+        double[] statsToReturn = new double[5];
         BoardStats stats = new BoardStats(gs);
         Vector2d myPosition = gs.getPosition();
 
@@ -148,19 +148,19 @@ public class Features {
 //            }
 //        }
 
-        statsToReturn[0] = 1.0/(minBombDist+1)*5;
-        statsToReturn[1] = 1.0/(minEnemyDist+1)*5;
+        statsToReturn[0] = 1.0/(minBombDist+1);
+        statsToReturn[1] = 1.0/(minEnemyDist+1);
         statsToReturn[2] = 1.0/(minPowerUp+1);
 //        statsToReturn[3] = (double)gs.getAmmo()*gs.getBlastStrength()/20;
 //        statsToReturn[4] = (double) stats.nWoods /20;
 //
         if (stats.canKick)
-            statsToReturn[4] = 0.3;
-        else statsToReturn[4] = 0.0;
+            statsToReturn[3] = 0.3;
+        else statsToReturn[3] = 0.0;
 
-        statsToReturn[5] = 1.0/(minRigid+1);
-        statsToReturn[6] = 1.0/(minFlame+1);
-        statsToReturn[3] = 1.0/(minWood+1);
+        statsToReturn[4] = 1.0/(minRigid+1);
+//        statsToReturn[6] = 1.0/(minFlame+1);
+//        statsToReturn[3] = 1.0/(minWood+1);
 
 
         return statsToReturn;

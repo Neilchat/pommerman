@@ -36,26 +36,28 @@ public class Mutation {
     public void mutateGenes(Individual ind, int action, List<Integer> genesToMutate){
         for (int i = 0; i < featureLength; i++) {
             if (genesToMutate.contains(i)) {
-                if (random.nextDouble()>0.45) ind.set_action(action, i, ind.get_action(action, i) + random.nextDouble()* 0.001);
-                else ind.set_action(action, i, ind.get_action(action, i) - random.nextDouble()* 0.001);
+                if (random.nextDouble()>0.45) ind.set_action(action, i, ind.get_action(action, i) + random.nextDouble()* 0.0001);
+                else ind.set_action(action, i, ind.get_action(action, i) - random.nextDouble()* 0.0001);
                 //ind.set_action(action, i, ind.get_action(action, i) + random.nextDouble()* 0.001);
             }
         }
         //normalize(ind, action);
     }
 
-    private void normalize(Individual ind, int action){
-        double max = 0;
-        double min = 10000;
-        for (int i = 0; i < featureLength; i++) {
-            if (ind.get_action(action, i)>max) max = ind.get_action(action,i);
-            if (ind.get_action(action, i)<min) min = ind.get_action(action, i);
-        }
-        double range = max-min;
-        for (int i = 0; i < featureLength; i++) {
-            ind.set_action(action, i, (ind.get_action(action, i)-min)/range);
-        }
 
+
+    public void normalize(Individual ind, int actions){
+        for (int j = 0; j<featureLength; j++)  {
+            double max = 0;
+            double min = 10000;
+            for (int i = 0; i < actions; i++) {
+                if (ind.get_action(i, j) > max) max = ind.get_action(i, j);
+                if (ind.get_action(i, j) < min) min = ind.get_action(i, j);
+            }
+            double range = max-min+random.nextDouble()*0.01;
+            for (int i = 0; i < actions; i++) {
+                ind.set_action(i, j,(ind.get_action(i, j)-min)/range);
+            }
+        }
     }
-
 }
