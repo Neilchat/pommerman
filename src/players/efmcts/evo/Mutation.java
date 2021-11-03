@@ -36,8 +36,8 @@ public class Mutation {
     public void mutateGenes(Individual ind, int action, List<Integer> genesToMutate){
         for (int i = 0; i < featureLength; i++) {
             if (genesToMutate.contains(i)) {
-                if (random.nextFloat() < 0.5) ind.set_action(action, i, ind.get_action(action, i) + random.nextDouble() * 0.001);
-                else ind.set_action(action, i, ind.get_action(action, i) - random.nextDouble() * 0.001);
+                if (random.nextFloat() < 0.6) ind.set_action(action, i, ind.get_action(action, i) + random.nextDouble() * 0.0001);
+                else ind.set_action(action, i, ind.get_action(action, i) - random.nextDouble() * 0.0001);
                 }
             }
         //normalize(ind, action);

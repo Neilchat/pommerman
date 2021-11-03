@@ -133,6 +133,7 @@ public class SingleTreeNode
                 }
                 System.out.println();
             }
+            actionWeights[0] = actionWeights[0]*4;
             System.out.println("Action weights  ");
             for (int i = 0; i < effectiveActions; i++) {
                 System.out.print(actionWeights[i] + "  ");
