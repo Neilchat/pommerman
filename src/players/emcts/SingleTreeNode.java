@@ -90,11 +90,15 @@ public class SingleTreeNode
 
             for (int i =0; i< ea.getPopsize(); i++) {
                 Individual weights = ea.getPopulation()[i];
-                GameState state = rootState.copy();
-                SingleTreeNode selected = treePolicy(state);
-                double delta = selected.rollOut(state, weights.get_actions());
-                backUp(selected, delta);
-                ea.evaluate(ea.getPopulation()[i], delta);
+                double fitness = 0.0;
+                for (int j = 0; j<4; j++) {
+                    GameState state = rootState.copy();
+                    SingleTreeNode selected = treePolicy(state);
+                    double delta = selected.rollOut(state, weights.get_actions());
+                    backUp(selected, delta);
+                    fitness+=delta;
+                }
+                ea.evaluate(ea.getPopulation()[i], fitness/4);
             }
 
             ea.evolve();
@@ -118,7 +122,7 @@ public class SingleTreeNode
         if (rootState.getTick()== 500 || rootState.getTick()==1){
             System.out.println(numIters);
             for (int i = 0; i<num_actions; i++){
-                System.out.println(ea.getPopulation()[0].get_action(i));
+                System.out.print(ea.getPopulation()[0].get_action(i));
             }
             System.out.println(" ITERS " + numIters);
         }
