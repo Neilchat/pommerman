@@ -93,7 +93,7 @@ public class CustomHeuristic extends StateHeuristic {
             int diffBlastStrength = futureState.blastStrength - this.blastStrength;
             int diffAmmo = futureState.ammo - this.ammo;
 
-            return (diffEnemies / 3.0) * 2 + diffTeammates * FACTOR_TEAM + (diffWoods / maxWoods) * FACTOR_WOODS
+            return (diffEnemies / 3.0) * FACTOR_ENEMY + diffTeammates * FACTOR_TEAM + (diffWoods / maxWoods) * FACTOR_WOODS
                     + diffCanKick * FACTOR_CANKCIK + (diffBlastStrength / maxBlastStrength) * FACTOR_BLAST;
         }
     }
