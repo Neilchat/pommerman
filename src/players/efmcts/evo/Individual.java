@@ -19,11 +19,11 @@ public class Individual implements Comparable {
         this.numFeatures = numFeatures;
     }
 
-    void randomize() {
+    void init() {
         for (int i = 0; i < numActions; i++) {
             for (int j = 0; j < numFeatures; j++)
-            //todo add small var
                 actionsWeights[i][j] = 0.0;
+            //todo explore if adding random small weights helps during init
         }
     }
 

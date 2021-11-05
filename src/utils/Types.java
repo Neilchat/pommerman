@@ -217,16 +217,6 @@ public class Types {
         ACTIONS(int numVal) {  this.key = numVal; }
         public int getKey() {return this.key;}
 
-        public static ArrayList<ACTIONS> move()
-        {
-            ArrayList<ACTIONS> allActions = new ArrayList<ACTIONS>();
-            allActions.add(ACTION_UP);
-            allActions.add(ACTION_DOWN);
-            allActions.add(ACTION_LEFT);
-            allActions.add(ACTION_RIGHT);
-            allActions.add(ACTION_STOP);
-            return allActions;
-        }
         /**
          * Gets all actions of the game
          * @return all the actions in an array list.

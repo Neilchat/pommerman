@@ -13,23 +13,22 @@ public class Evolution {
     private Crossover crossoverClass;
     private Selection selectionClass;
 
-    private int nIterations;
     private Individual[] population;
     private int popsize;
     private int featureLength;
     private int numActions;
+    private int numElites;
 
 
-    public Evolution(Random random, int popSize, int featureLength, int numActions) {
+    public Evolution(Random random, int popSize, int featureLength, int numActions, double mutationProb, double mutationStrength, int numElites) {
         this.random = random;
         this.popsize = popSize;
         this.featureLength = featureLength;
         this.numActions = numActions;
-        mutationClass = new Mutation(random, featureLength);
-        crossoverClass = new Crossover(random);
-        selectionClass = new Selection(random);
-        nIterations = 0;
-
+        this.mutationClass = new Mutation(random, featureLength, mutationProb, mutationStrength);
+        this.crossoverClass = new Crossover(random);
+        this.selectionClass = new Selection(random);
+        this.numElites = numElites;
     }
 
     public void init() {
@@ -37,8 +36,7 @@ public class Evolution {
     }
 
     /**
-     * Performs 1 iteration of EA.
-     * @return - best action after 1 iteration.
+     * Performs 1 iteration of evolution
      */
     public void evolve() {
         // Generate offspring
@@ -50,11 +48,15 @@ public class Evolution {
 
     private void init_population() {
         population = new Individual[popsize];
+
+        //For an unseeded agent
 //        for (int i = 0; i < popsize; i++) {
 //            population[i] = new Individual(numActions, random, featureLength);
-//            population[i].randomize();
+//            population[i].init();
 //        }
 
+        //For a seeded agent use:
+        //Seed obtained by experimentation against MCTS, RHEA and OSLA when the agent was on a winning streak
         double[][] actions ={{ 0.2702793692827582,  0.18408435060940917,  0.3277143777498021,  0.3031121226272133,  0.3859720291483031},
                 {0.21093693712606898 ,  0.2920830971083769,  0.22817448797837608,  0.25026563595402523,  0.2468879471030393
         }};
@@ -80,6 +82,7 @@ public class Evolution {
         return selectionClass.select(population);
     }
 
+    //Tournament Selection is used here
     private Individual select(Individual[] population, Individual ignore) {
         Individual[] reduced_pop = new Individual[population.length - 1];
         int idx = 0;
@@ -104,11 +107,8 @@ public class Evolution {
         Individual[] offspring = new Individual[6];
         for (int i = 0; i < 6; i++) {
             offspring[i] = crossover(population);
+            //For each inidividual we select a set of features for which we mutate the weight for every action
             List mutateGenes = mutationClass.findGenesToMutate();
-//            double[] mutationVals = new double[mutateGenes.size()];
-//            for (int k = 0; k< mutationVals.length; k++){
-//                mutationVals[k] = random.nextDouble();
-//            }
             for (int j =0; j< numActions; j++) {
                 mutationClass.mutateGenes(offspring[i], j, mutateGenes);
                 }
@@ -116,43 +116,18 @@ public class Evolution {
         return offspring;
     }
 
-    /**
-     * Assumes population and offspring are already sorted in descending order by individual fitness
-     * @param offspring - offspring created from parents population
-     */
     @SuppressWarnings("unchecked")
     private void combine_and_sort_population(Individual[] offspring){
-        int startIdx = 0;
-
-        // Make sure we have enough individuals to choose from for the next population
-
-        //todo elitism count
-            // First no_elites individuals remain the same, the rest are replaced
-        startIdx = 4;
+        int startIdx = numElites;
         Arrays.sort(population, Comparator.reverseOrder());
-        //Arrays.sort(offspring, Comparator.reverseOrder());
 
 
-        // Combine population with offspring, we keep only best individuals. If parents should not be kept, new
-        // population is only best POP_SIZE offspring individuals.
+        //We keep the elites from parent pop, and replace rest with the offsprings created
         int nextIdx = 0;
         for (int i = startIdx; i < popsize; i++) {
             population[i] = offspring[nextIdx].copy();
-            nextIdx ++;
+            nextIdx++;
         }
-
-//        for (int i = startIdx; i < popsize; i++) {
-//            List mutateGenes = mutationClass.findGenesToMutate();
-//            double[] mutationVals = new double[mutateGenes.size()];
-//            for (int k = 0; k< mutationVals.length; k++){
-//                mutationVals[k] = random.nextDouble();
-//            }
-//            boolean actionPositive = random.nextBoolean();
-//            for (int j =0; j< numActions; j++) {
-//                mutationClass.mutateGenes(population[i], j, mutateGenes, mutationVals, actionPositive);
-//                actionPositive = !actionPositive;
-//            }
-//        }
     }
 
 

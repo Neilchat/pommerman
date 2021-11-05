@@ -23,10 +23,12 @@ public class Crossover {
     }
 
 
+    //Function to cross to individuals' weight matrices
     private Individual apply_crossover(Individual parent1, Individual parent2, Function<Integer, Boolean> function) {
         int num_actions = parent1.get_max_actions();
         int num_features = parent1.get_numFeatures();
 
+        //For each action (row), for each feature we randomly pick one of the parents and use its weight to populate offspring's weight matrix
         Individual ind = new Individual(num_actions, random, num_features);
         double[][] actions = new double[num_actions][num_features];
         for (int i =0; i< num_actions; i++) {

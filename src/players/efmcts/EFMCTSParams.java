@@ -36,6 +36,21 @@ public class EFMCTSParams implements ParameterSet {
     public int num_fmcalls = 2000;
     public int num_time = 40;
 
+    // Number of rollouts per evaluation
+    public int L = 4;
+    //Population size (P)
+    public int popSize = 10;
+    //Number of effective actions (nEA)
+    public int numEffectiveActions=2;
+    //Number of features (nF)
+    public int numFeatures=5;
+    //Mutation probability (mP)
+    public double mutationProbability= 0.2;
+    //Mutation strength (mS) low-0.0001, medium 0.001
+    public double mutationStrength= 0.0001;
+    //Number of elites (E)
+    public int numElites = 4;
+
     @Override
     public void setParameterValue(String param, Object value) {
         switch(param) {

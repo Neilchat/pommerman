@@ -11,10 +11,10 @@ public class Selection {
     
     private Random random;
     private double prob;
-    
-    //todo tournament size
 
 
+    //We perform tournament selection of size 2.
+    //Todo experiment with tournament size
     public Selection(Random random){
         this.random = random;
     }

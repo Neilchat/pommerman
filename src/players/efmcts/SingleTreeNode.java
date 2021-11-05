@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import static java.lang.Math.exp;
+import static utils.Types.ACTIONS.*;
 
 public class SingleTreeNode
 {
@@ -33,13 +34,14 @@ public class SingleTreeNode
     private int fmCallsCount;
 
     private int num_actions;
-    private int effectiveActions =2;
+    private int effectiveActions;
     private Types.ACTIONS[] actions;
 
     private GameState rootState;
     private StateHeuristic rootStateHeuristic;
 
     private Evolution ea;
+    private int L;
 
     SingleTreeNode(EFMCTSParams p, Random rnd, int num_actions, Types.ACTIONS[] actions, Evolution ea) {
         this(p, null, -1, rnd, num_actions, actions, 0, null, ea);
@@ -63,6 +65,8 @@ public class SingleTreeNode
         else
             m_depth = 0;
         this.ea = ea;
+        this.effectiveActions = params.numEffectiveActions;
+        this.L = params.L;
     }
 
     void setRootGameState(GameState gs)
@@ -85,45 +89,50 @@ public class SingleTreeNode
         int remainingLimit = 5;
         boolean stop = false;
 
-        while(!stop){
+        while(!stop) {
 
             ElapsedCpuTimer elapsedTimerIteration = new ElapsedCpuTimer();
 
 
-            for (int i =0; i< ea.getPopsize(); i++) {
+            //Loop over the population's individuals
+            for (int i = 0; i < ea.getPopsize(); i++) {
                 Individual weights = ea.getPopulation()[i];
+                //Initialize fitness to compute average reward for individual
                 double fitness = 0.0;
-                for (int j = 0; j<4; j++) {
+                //For each individual perform L MCTS roll outs
+                for (int j = 0; j < L; j++) {
                     GameState state = rootState.copy();
                     SingleTreeNode selected = treePolicy(state);
                     double delta = selected.rollOut(state, weights.get_actions());
-                    //System.out.println("Delta  "+delta);
                     backUp(selected, delta);
-                    fitness+=delta;
+                    fitness += delta;
                 }
-                ea.evaluate(ea.getPopulation()[i], fitness/4);
+                //Update fitness of individual with average reward from the L rollouts
+                ea.evaluate(ea.getPopulation()[i], fitness / L);
             }
+            //Evolve the population by performing elitism, crossovers and mutations.
             ea.evolve();
 
-            //Stopping condition
-            if(params.stop_type == params.STOP_TIME) {
+            //Stopping condition is defaulted to Stop Time for our agent
+            if (params.stop_type == params.STOP_TIME) {
                 numIters++;
-                acumTimeTaken += (elapsedTimerIteration.elapsedMillis()) ;
-                avgTimeTaken  = acumTimeTaken/numIters;
+                acumTimeTaken += (elapsedTimerIteration.elapsedMillis());
+                avgTimeTaken = acumTimeTaken / numIters;
                 remaining = elapsedTimer.remainingTimeMillis();
                 stop = remaining <= 2 * avgTimeTaken || remaining <= remainingLimit;
-            }else if(params.stop_type == params.STOP_ITERATIONS) {
+            } else if (params.stop_type == params.STOP_ITERATIONS) {
+                //Note here that each iteration now is actually popSize*L rollouts. We generally observe ~ 12 iterations for default settings
                 numIters++;
                 stop = numIters >= params.num_iterations;
-            }else if(params.stop_type == params.STOP_FMCALLS)
-            {
-                fmCallsCount+=params.rollout_depth;
+            } else if (params.stop_type == params.STOP_FMCALLS) {
+                fmCallsCount += params.rollout_depth;
                 stop = (fmCallsCount + params.rollout_depth) > params.num_fmcalls;
             }
         }
+//  To use for debugging, and getting optimal individuals, and action weights, used for seeding. Prints them every game tick 1 or 500
         if (rootState.getTick()== 500 || rootState.getTick()==1) {
             System.out.println();
-            Features features = new Features(rootState, m_rnd);
+            Features features = new Features(rootState, params.numFeatures);
             double[] featureWeights = features.getStats();
             double[] actionWeights = new double[effectiveActions];
             double[][] weights = ea.getPopulation()[0].get_actions();
@@ -248,6 +257,7 @@ public class SingleTreeNode
         int thisDepth = this.m_depth;
 
         while (!finishRollout(state,thisDepth)) {
+            //Instead of any safe action we now use the action weight matrix to compute probabilities over the action space to explore
             int action = safeWeightedAction(state, weights);
             roll(state, actions[action]);
             thisDepth++;
@@ -259,16 +269,17 @@ public class SingleTreeNode
     private int safeWeightedAction(GameState state, double[][] weights)
     {
 
+        //Get the probability distribution using weights and game state
         double[] probs = getProabilities(weights, state);
 
         double prob = m_rnd.nextDouble();
 
-        //Using the probabilities we decide whether moving or stopping or bomb.
+        //Using the probabilities we decide whether move or bomb.
         for (int i =0; i< effectiveActions; i++){
             prob = prob - probs[i];
             if (prob<=0){
-                if (i==0) return safeRandomMoveAction(state);
-//                if (i==1) return Types.ACTIONS.ACTION_STOP.getKey();
+                //If movement we randomly decide the direction or stop provided it is safe
+                if (i==0) return safeRandomMovementAction(state);
                 if (i==2) return Types.ACTIONS.ACTION_BOMB.getKey();
             }
         }
@@ -310,9 +321,10 @@ public class SingleTreeNode
         return m_rnd.nextInt(num_actions);
     }
 
-    private int safeRandomMoveAction(GameState state)
+    //Searches for a safe movement action including stop, instead of all actions
+    private int safeRandomMovementAction(GameState state)
     {
-        ArrayList<Types.ACTIONS> actionsToTry = Types.ACTIONS.move();
+        ArrayList<Types.ACTIONS> actionsToTry = movement();
         while(actionsToTry.size() > 0) {
 
             int nAction = m_rnd.nextInt(actionsToTry.size());
@@ -326,10 +338,26 @@ public class SingleTreeNode
         return m_rnd.nextInt(num_actions);
     }
 
+    public static ArrayList<Types.ACTIONS> movement()
+    {
+        ArrayList<Types.ACTIONS> allActions = new ArrayList<Types.ACTIONS>();
+        allActions.add(Types.ACTIONS.ACTION_UP);
+        allActions.add(ACTION_DOWN);
+        allActions.add(ACTION_LEFT);
+        allActions.add(ACTION_RIGHT);
+        allActions.add(ACTION_STOP);
+        return allActions;
+    }
+
+    //calculates the probability distribution over the effective action space (2 in this case)
+    //using weight matrix and features from the game state
     private double[] getProabilities(double[][] weights, GameState state){
+
+        // Gets the action weights to perform softmax with
         double[] actionWeights = getActionWeights(weights, state);
         double sum=0;
         double[] prob = new double[actionWeights.length];
+        //Perform softmax
         for (int i = 0; i<actionWeights.length; i++){
             sum+=exp(-actionWeights[i]);
         }
@@ -339,8 +367,9 @@ public class SingleTreeNode
         return prob;
     }
 
+    //Performs a sum of Weight matrix multiplied by feature weight over the features for each action
     private double[] getActionWeights(double[][] weights, GameState state){
-        Features features = new Features(state, m_rnd);
+        Features features = new Features(state, params.numFeatures);
         double[] featureWeights = features.getStats();
         double[] actionWeights = new double[effectiveActions];
         for (int i =0; i< effectiveActions; i++) {
@@ -348,6 +377,7 @@ public class SingleTreeNode
                 actionWeights[i] += weights[i][j]*featureWeights[j];
             }
         }
+        //Since the first action weight encodes for movement which is 5 actual actions we multiply by 5
         actionWeights[0] = actionWeights[0]*5;
         return actionWeights;
     }

@@ -19,10 +19,10 @@ public class Test {
         // Game parameters
         long seed = System.currentTimeMillis();
         int boardSize = Types.BOARD_SIZE;
-        Types.GAME_MODE gameMode = Types.GAME_MODE.FFA;
+        Types.GAME_MODE gameMode = Types.GAME_MODE.TEAM;
         boolean useSeparateThreads = false;
 
-        Game game = new Game(seed, boardSize, Types.GAME_MODE.FFA, "");
+        Game game = new Game(seed, boardSize, Types.GAME_MODE.TEAM, "");
 
         // Key controllers for human player s (up to 2 so far).
         KeyController ki1 = new KeyController(true);
