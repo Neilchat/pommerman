@@ -91,8 +91,6 @@ public class Run {
                 switch(agentType) {
                     case 0:
                         EFMCTSParams efmctsParams = new EFMCTSParams();
-                        efmctsParams.stop_type = efmctsParams.STOP_TIME;
-                        efmctsParams.heuristic_method = efmctsParams.CUSTOM_HEURISTIC;
                         p = new EFMCTSPlayer(seed, playerID++, efmctsParams);
                         playerStr[i-4] = "EFMCTS";
                         break;
