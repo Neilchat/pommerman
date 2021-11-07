@@ -130,31 +130,31 @@ public class SingleTreeNode
             }
         }
 //  To use for debugging, and getting optimal individuals, and action weights, used for seeding. Prints them every game tick 1 or 500
-        if (rootState.getTick()== 500 || rootState.getTick()==1) {
-            System.out.println();
-            Features features = new Features(rootState, params.numFeatures);
-            double[] featureWeights = features.getStats();
-            double[] actionWeights = new double[effectiveActions];
-            double[][] weights = ea.getPopulation()[0].get_actions();
-            for (int i =0; i< effectiveActions; i++) {
-                for (int j = 0; j < featureWeights.length; j++) {
-                    System.out.print(weights[i][j] + "  ");
-                    actionWeights[i] += weights[i][j]*featureWeights[j];
-                }
-                System.out.println();
-            }
-            actionWeights[0] =5*actionWeights[0];
-            System.out.println("Action weights  ");
-            for (int i = 0; i < effectiveActions; i++) {
-                System.out.print(actionWeights[i] + "  ");
-            }
-            System.out.println();
-            System.out.println("Feature weights  ");
-            for (int i = 0; i < featureWeights.length; i++) {
-                System.out.print(featureWeights[i] + "  ");
-            }
-            System.out.println(" ITERS for efmcts  " + numIters);
-        }
+//        if (rootState.getTick()== 500 || rootState.getTick()==1) {
+//            System.out.println();
+//            Features features = new Features(rootState, params.numFeatures);
+//            double[] featureWeights = features.getStats();
+//            double[] actionWeights = new double[effectiveActions];
+//            double[][] weights = ea.getPopulation()[0].get_actions();
+//            for (int i =0; i< effectiveActions; i++) {
+//                for (int j = 0; j < featureWeights.length; j++) {
+//                    System.out.print(weights[i][j] + "  ");
+//                    actionWeights[i] += weights[i][j]*featureWeights[j];
+//                }
+//                System.out.println();
+//            }
+//            actionWeights[0] =5*actionWeights[0];
+//            System.out.println("Action weights  ");
+//            for (int i = 0; i < effectiveActions; i++) {
+//                System.out.print(actionWeights[i] + "  ");
+//            }
+//            System.out.println();
+//            System.out.println("Feature weights  ");
+//            for (int i = 0; i < featureWeights.length; i++) {
+//                System.out.print(featureWeights[i] + "  ");
+//            }
+//            System.out.println(" ITERS for efmcts  " + numIters);
+//        }
     }
 
     private SingleTreeNode treePolicy(GameState state) {
